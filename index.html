@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terra Dashboard</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <div id="ask_name">
+        <h2>Enter your name to get started.</h2>
+        <input type="text" id="name">
+        <button id="submit-name">Continue</button>
+    </div>
+
+    <h2 id="show-name"></h2>
+
+    <script>
+        const askBox = document.getElementById("ask_name")
+        const showName = document.getElementById("show-name")
+
+        document.getElementById('submit-name').addEventListener('click', function () {
+            const input = document.getElementById("name");
+            const value = input.value.trim();
+            if (value === '') {
+                input.focus();
+                return;
+            }
+
+            showName.textContent = `Welcome, ${value}!`;
+            showName.classList.add('visible');
+            askBox.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
