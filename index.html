@@ -1,100 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Terra Dashboard</title>
-    <link rel="stylesheet" href="./css/index.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
     <div id="ask_name">
-        <h2>Enter your name to get started.</h2>
-        <input type="text" id="name">
-        <button id="submit-name">Continue</button>
+      <h2>Enter your name to get started.</h2>
+      <input type="text" id="name" />
+      <button id="submit-name">Continue</button>
     </div>
 
     <h2 id="show-name"></h2>
 
-    <script>
-        const askBox = document.getElementById("ask_name")
-        const showName = document.getElementById("show-name")
-        const localname = localStorage.getItem('saved_name') || 'None';
-
-        if (localname != 'None') {
-            showName.textContent = `Welcome, ${localname}!`;
-            showName.classList.add('visible');
-            askBox.classList.add('hidden')
-        }
-
-        document.getElementById('submit-name').addEventListener('click', function () {
-            const input = document.getElementById("name");
-            const value = input.value.trim();
-            if (value === '') {
-                input.focus();
-                return;
-            }
-
-            showName.textContent = `Welcome, ${value}!`;
-            localStorage.setItem('saved_name', value);
-            showName.classList.add('visible');
-            askBox.classList.add('hidden');
-        });
-    </script>
-
-    <div id="clock">
-        <h3 id="the-actual-time">24:00</h3>
-        <button id="start">Start</button>
-        <button id="reset">Reset</button>
+    <div id="clock" class="hidden">
+      <h3 id="the-actual-time">24:00</h3>
+      <button id="start">Start</button>
+      <button id="reset">Reset</button>
     </div>
 
     <script>
-        const clock = document.getElementById('clock');
-        const the_actual_time = document.getElementById('the-actual-time');
-        const startbtn = document.getElementById('start')
-        const resetbtn = document.getElementById('reset')
+      const askBox = document.getElementById("ask_name");
+      const showName = document.getElementById("show-name");
+      const clockEl = document.getElementById("clock");
+      const localname = localStorage.getItem("saved_name");
 
-        const START = 24 * 60;
-        let remaining = START;
-        let intervalid = null;
+      function greet(name) {
+        showName.textContent = `Welcome, ${name}!`;
+        showName.classList.add("visible");
+        askBox.classList.add("hidden");
+        clockEl.classList.remove("hidden"); 
+      }
 
-        function render() {
-            const mins = Math.floor(remaining / 60);
-            const secs = remaining % 60;
-            the_actual_time.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      if (localname) {
+        greet(localname);
+      }
+
+      document.getElementById("submit-name").addEventListener("click", function () {
+        const input = document.getElementById("name");
+        const value = input.value.trim();
+        if (value === "") {
+          input.focus();
+          return;
         }
-
-        function tick() {
-            if (remaining <= 0) {
-                clearInterval(intervalid);
-                intervalId = null;
-                startbtn.textContent = 'Start';
-                return;
-            }
-            remaining--;
-            render();
-        }
-
-        startbtn.addEventListener('click', function () {
-            if (intervalid !== null) {
-                clearInterval(intervalid)
-                intervalid = null;
-                startbtn.textContent = 'start';
-            } else {
-                if (remaining === 0) return;
-                intervalid = setInterval(tick, 1000);
-                startbtn.textContent = 'Pause'
-            }
-        });
-
-        resetbtn.addEventListenter('click', function () {
-            clearInterval(intervalid);
-            intervalid = null
-            remaining = START
-            startbtn.textContent = 'Start';
-            render();
-        })
-
-        render();
+        localStorage.setItem("saved_name", value);
+        greet(value);
+      });
     </script>
-</body>
+
+    <script>
+      const the_actual_time = document.getElementById("the-actual-time");
+      const startbtn = document.getElementById("start");
+      const resetbtn = document.getElementById("reset");
+
+      const START = 24 * 60;
+      let remaining = START;
+      let intervalid = null;
+
+      function render() {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        the_actual_time.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      }
+
+      function tick() {
+        if (remaining <= 0) {
+          clearInterval(intervalid);
+          intervalid = null;
+          startbtn.textContent = "Start";
+          return;
+        }
+        remaining--;
+        render();
+      }
+
+      startbtn.addEventListener("click", function () {
+        if (intervalid !== null) {
+          clearInterval(intervalid);
+          intervalid = null;
+          startbtn.textContent = "Start";
+        } else {
+          if (remaining === 0) return;
+          intervalid = setInterval(tick, 1000);
+          startbtn.textContent = "Pause";
+        }
+      });
+
+      resetbtn.addEventListener("click", function () {
+        clearInterval(intervalid);
+        intervalid = null;
+        remaining = START;
+        startbtn.textContent = "Start";
+        render();
+      });
+
+      render();
+    </script>
+  </body>
 </html>

@@ -56,7 +56,7 @@ body {
 
 #ask_name input {
     background: rgba(12, 98, 210, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.15)
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 #ask_name input::placeholder {
@@ -83,13 +83,8 @@ body {
     transform: scale(0.98);
 }
 
-#ask_name.hidden {
-    opacity: 0;
-    transform: scale(0.98);
-    pointer-events: none;
-}
-
-#show_name {
+/* Fixed: id matches HTML (#show-name), not #show_name */
+#show-name {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -102,7 +97,7 @@ body {
     transition: opacity 0.5s ease 0.2s;
 }
 
-#show_name.visible {
+#show-name.visible {
     opacity: 1;
 }
 
@@ -122,3 +117,40 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.15); 
 }
 
+.hidden {
+    display: none !important;
+}
+
+#clock button {
+    position: relative;
+    padding: 12px 28px;
+    min-width: 120px;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.1s ease;
+}
+
+#clock button:hover {
+    background: rgba(12, 98, 210, 0.35);
+    border-color: rgba(120, 180, 255, 0.6);
+    box-shadow:
+        0 0 12px rgba(12, 98, 210, 0.6),
+        0 0 24px rgba(12, 98, 210, 0.35),
+        inset 0 0 12px rgba(120, 180, 255, 0.15);
+    transform: translateY(-1px);
+}
