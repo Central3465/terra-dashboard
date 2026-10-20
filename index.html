@@ -16,9 +16,12 @@
     <h2 id="show-name"></h2>
 
     <div id="clock" class="hidden">
-      <h3 id="the-actual-time">24:00</h3>
-      <button id="start">Start</button>
-      <button id="reset">Reset</button>
+      <div id="drag-handle" class="drag-handle" title="Drag to move">⠿ Move</div>
+      <input type="text" id="the-actual-time" value="24:00" spellcheck="false" />
+      <div class="clock-buttons">
+        <button id="start">Start</button>
+        <button id="reset">Reset</button>
+      </div>
     </div>
 
     <script>
@@ -31,7 +34,7 @@
         showName.textContent = `Welcome, ${name}!`;
         showName.classList.add("visible");
         askBox.classList.add("hidden");
-        clockEl.classList.remove("hidden"); 
+        clockEl.classList.remove("hidden");
       }
 
       if (localname) {
@@ -54,34 +57,83 @@
       const the_actual_time = document.getElementById("the-actual-time");
       const startbtn = document.getElementById("start");
       const resetbtn = document.getElementById("reset");
+      const handle = document.getElementById("drag-handle");
 
-      const START = 24 * 60;
+      const START = 24 * 60;          // default: 24:00
+      const MAX = 99 * 60 + 59;       // largest value the display can show
       let remaining = START;
       let intervalid = null;
 
+      // Parse "MM:SS" (or "M:S") into total seconds. Returns null if invalid.
+      function parseTime(str) {
+        const m = str.trim().match(/^(\d{1,2}):(\d{1,2})$/);
+        if (!m) return null;
+        const mins = Number(m[1]);
+        const secs = Number(m[2]);
+        if (secs > 59) return null;
+        return mins * 60 + secs;
+      }
+
+      function setRemaining(value) {
+        remaining = Math.max(0, Math.min(MAX, value));
+      }
+
+      // Read whatever the user typed into `remaining`. Invalid input is discarded.
+      function commitInput() {
+        const parsed = parseTime(the_actual_time.value);
+        if (parsed !== null) setRemaining(parsed);
+        render();
+      }
+
       function render() {
+        if (document.activeElement === the_actual_time) return; // don't overwrite while typing
         const mins = Math.floor(remaining / 60);
         const secs = remaining % 60;
-        the_actual_time.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+        the_actual_time.value = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      }
+
+      function stopTimer() {
+        clearInterval(intervalid);
+        intervalid = null;
+        startbtn.textContent = "Start";
       }
 
       function tick() {
         if (remaining <= 0) {
-          clearInterval(intervalid);
-          intervalid = null;
-          startbtn.textContent = "Start";
+          stopTimer();
           return;
         }
         remaining--;
         render();
       }
 
+      // Commit typed values when the user leaves the box or presses Enter
+      the_actual_time.addEventListener("blur", commitInput);
+      the_actual_time.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          the_actual_time.blur();
+        } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+          e.preventDefault();
+          commitInput();
+          setRemaining(remaining + (e.key === "ArrowUp" ? 60 : -60));
+          render();
+        }
+      });
+
+      // Mouse wheel: 1 minute per notch, Shift = 1 second
+      the_actual_time.addEventListener("wheel", function (e) {
+        e.preventDefault();
+        commitInput();
+        const step = e.shiftKey ? 1 : 60;
+        setRemaining(remaining + (e.deltaY < 0 ? step : -step));
+        render();
+      }, { passive: false });
+
       startbtn.addEventListener("click", function () {
         if (intervalid !== null) {
-          clearInterval(intervalid);
-          intervalid = null;
-          startbtn.textContent = "Start";
+          stopTimer();
         } else {
+          commitInput();
           if (remaining === 0) return;
           intervalid = setInterval(tick, 1000);
           startbtn.textContent = "Pause";
@@ -89,12 +141,40 @@
       });
 
       resetbtn.addEventListener("click", function () {
-        clearInterval(intervalid);
-        intervalid = null;
-        remaining = START;
-        startbtn.textContent = "Start";
+        stopTimer();
+        setRemaining(START);
         render();
       });
+
+      // Dragging the clock by its handle
+      let dragging = false;
+      let startX = 0, startY = 0;
+      let baseX = 0, baseY = 0;
+      let posX = 0, posY = 0;
+
+      handle.addEventListener("pointerdown", function (e) {
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        baseX = posX;
+        baseY = posY;
+        handle.setPointerCapture(e.pointerId);
+        clockEl.classList.add("dragging");
+      });
+
+      handle.addEventListener("pointermove", function (e) {
+        if (!dragging) return;
+        posX = baseX + (e.clientX - startX);
+        posY = baseY + (e.clientY - startY);
+        clockEl.style.transform = `translate(${posX}px, ${posY}px)`;
+      });
+
+      function endDrag() {
+        dragging = false;
+        clockEl.classList.remove("dragging");
+      }
+      handle.addEventListener("pointerup", endDrag);
+      handle.addEventListener("pointercancel", endDrag);
 
       render();
     </script>

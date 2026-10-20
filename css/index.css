@@ -100,11 +100,12 @@ body {
 }
 
 #clock {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    padding: 32px 40px;
+    padding: 40px 40px 32px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 18px;
@@ -113,6 +114,48 @@ body {
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.15); 
+    user-select: none;
+    transition: box-shadow 0.25s ease;
+}
+
+#clock.dragging {
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.5),
+        0 0 24px rgba(12, 98, 210, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.drag-handle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    background: rgba(12, 98, 210, 0.45);
+    border: 1px solid rgba(120, 180, 255, 0.5);
+    border-radius: 999px;
+    cursor: grab;
+    touch-action: none;
+    white-space: nowrap
+}
+
+.drag-handle:hover {
+    color: #fff;
+    box-shadow: 0 0 12px rgba(12, 98, 210, 0.6);
+}
+
+#clock.dragging .drag-handle {
+    cursor: grabbing
+}
+
+.clock-buttons {
+    display: flex;
+    gap: 12px
 }
 
 .hidden {
@@ -151,4 +194,48 @@ body {
         0 0 24px rgba(12, 98, 210, 0.35),
         inset 0 0 12px rgba(120, 180, 255, 0.15);
     transform: translateY(-1px);
+}
+
+#clock button:active {
+    transform: scale(0.97)
+}
+
+#the-actual-time {
+    width: 180px;
+    padding: 12px 16px;
+    font-size: 2rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-align: center;
+    letter-spacing: 2px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    outline: none;
+    cursor: ns-resize;
+    user-select: text;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+        background-color 0.25s ease, 
+        border-color 0.25s ease,
+        box-shadow 0.25s ease; 
+}
+
+#the-actual-time:hover {
+    background: rgba(12, 98, 210, 0.35);
+    border-color: rgba(120, 180, 255, 0.45);
+}
+
+#the-actual-time:focus {
+    background: rgba(12, 98, 210, 0.35);
+    border-color: rgba(120, 180, 255, 0.7);
+    box-shadow:
+        0 0 12px rgba(12, 98, 210, 0.6),
+        inset 0 0 12px rgba(120, 180, 255, 0.15);
+}
+
+#the-actual-time::selection {
+    background: rgba(12, 98, 210, 0.6)
 }
