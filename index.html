@@ -15,6 +15,7 @@
   </div>
 
   <h2 id="show-name" aria-live="polite"></h2>
+  <h2 id="greeting" aria-live="polite"></h2>
 
   <div id="clock" class="panel hidden">
     <button class="drag-handle" id="clock-handle" title="Drag to move (arrow keys to nudge)" aria-label="Move clock panel">⠿ Move</button>
@@ -35,6 +36,13 @@
       <label class="sr-only" for="goal-input">New goal</label>
       <input type="text" id="goal-input" placeholder="Enter a goal" autocomplete="off" />
       <button id="add-goal" type="button">Add Goal</button>
+    </div>
+  </div>
+
+  <div id="weather" class="panel hidden">
+    <button class="drag-handle" id="weather-handle" title="Drag to move (arrow keys to nudge)" aria-label="Move weather panel">⠿ Move</button>
+    <div id="weather-content" aria-live="polite">
+      <p class="empty">Loading weather...</p>
     </div>
   </div>
 

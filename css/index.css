@@ -159,7 +159,7 @@ button:focus-visible { box-shadow: 0 0 0 3px rgba(120, 180, 255, 0.7); }
   touch-action: none;
   white-space: nowrap;
 }
-.drag-handle:hover { color: #fff; box-shadow: 0 0 12px var(--glow); }
+.drag-handle:hover { color: #fff; box-shadow: 0 0 12px var(--glow); transform: translate(-50%, -50%); }
 .panel.dragging .drag-handle { cursor: grabbing; }
 
 /* clock */
@@ -255,4 +255,26 @@ button:focus-visible { box-shadow: 0 0 0 3px rgba(120, 180, 255, 0.7); }
   .panel { padding: 36px 20px 24px; }
   #show-name { font-size: 1.5rem; }
   #goals { min-width: unset; }
+}
+
+#weather { min-width: 240px}
+
+#weather-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.weather-temp {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.weather-detail {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
 }
