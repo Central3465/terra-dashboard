@@ -90,11 +90,11 @@
   const startBtn = $("start");
   const resetBtn = $("reset");
 
-  const START = 24 * 60; // 24 minutes
-  const MAX = 99 * 60 + 59; // 99:59
+  const START = 25 * 60; 
+  const MAX = 99 * 60 + 59; 
 
-  let remaining = START; // seconds
-  let endTime = null; // ms timestamp when running
+  let remaining = START; 
+  let endTime = null; 
   let tickId = null;
 
   const timerProgress = $("timer-progress");
