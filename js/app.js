@@ -97,6 +97,13 @@
   let endTime = null; // ms timestamp when running
   let tickId = null;
 
+  const timerProgress = $("timer-progress");
+  const TIMER_CIRCUMFERENCE = 2 * Math.PI * 54
+
+  if (timerProgress) {
+    timerProgress.style.strokeDasharray = TIMER_CIRCUMFERENCE
+  }
+
   function parseTime(str) {
     const m = String(str)
       .trim()
@@ -117,8 +124,19 @@
   }
 
   function render(force = false) {
-    if (!force && document.activeElement === timeInput) return;
-    timeInput.value = formatTime(remaining);
+    if (force || document.activeElement !== timeInput) {
+      timeInput.value = formatTime(remaining);
+    }
+
+    updateTimerRing();
+  }
+
+  function updateTimerRing() {
+    if (!timerProgress) return;
+
+    const progress = START > 0 ? Math.max(0, Math.min(1, remaining / START)) : 0; // ring = progress
+
+    timerProgress.style.strokeDashoffset = TIMER_CIRCUMFERENCE * (1 - progress);
   }
 
   function commitInput() {
@@ -465,6 +483,87 @@
 
   eventDate.value = localDateString()
 
+  const calendarMonthEl = $("calendar-month");
+  const calendarGrid = $("calendar-grid");
+  const selectedDateEl = $("calendar-selected-date");
+
+  const today = localDateString();
+  let selectedDate = today;
+
+  let displayedMonth = new Date();
+  displayedMonth.setDate(1);
+
+  function renderInteractiveCalendar() {
+    const year = displayedMonth.getFullYear();
+    const month = displayedMonth.getMonth();
+    calendarMonthEl.textContent = displayedMonth.toLocaleDateString(undefined, { month: "long", year: "numeric"});
+
+    calendarGrid.replaceChildren();
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const offset = (firstDay + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < 42; i++) {
+      const dayNumber = i - offset + 1;
+      const date = new Date(year, month, dayNumber);
+      const dateString = localDateString(date);
+      const inMonth = dayNumber >= 1 && dayNumber <= daysInMonth;
+      
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className("calendar-day");
+      button.textContent = date.getDate();
+
+      if (!inMonth) button.classList.add("outside-month");
+      if (dateString === today) button.classList.add("today");
+      if (dateString === selectedDate) button.classList.add("selected");
+
+      const hasEvents = calendarEvents.some((event) => event.date === dateString);
+
+      if (hasEvents) button.classList.add("has-events");
+
+      button.setAttribute(
+        "aria-label",
+        `${date.toLocaleDateString(undefined, {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        })}${hasEvents ? ", has events": ""}`
+      );
+
+      button.setAttribute("aria-pressed", String(dateString === selectedDate));
+
+      button.addEventListener("click", () => {
+        selectedDate = dateString;
+
+        displayedMonth = new Date(year, month, 1);
+        displayedMonth.setMonth(date.getMonth());
+
+        eventDate.value = selectedDate;
+        renderInteractiveCalendar();
+        renderCalendarEvents();
+      });
+      calendarGrid.append(button);
+    }
+
+    selectedDateEl.textContent = 
+      "Events for " + new Date(
+        ...selectedDate.split("-").map(Number).map((v, i) => i === 1 ? v -1 : v)
+        ).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric"}
+      );
+  }
+
+  $("calendar-prev").addEventListener("click", () => {
+    displayedMonth.setMonth(displayedMonth.getMonth() - 1);
+    renderInteractiveCalendar();
+  });
+
+  $("calendar-next").addEventListener("click", () => {
+    displayedMonth.setMonth(displayedMonth.getMonth() + 1);
+    renderInteractiveCalendar();
+  });
+
   function formatEventDate(dateString, timeString) {
     const [year, month, day] = dateString.split("-").map(Number);
     const [hours, minutes] = timeString.split(":").map(Number);
@@ -483,14 +582,12 @@
   function renderCalendarEvents() {
     eventsEl.replaceChildren();
 
-    const sortedEvents = [...calendarEvents].sort((a, b) =>
-      a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
-    );
+    const sortedEvents = calendarEvents.filter(event => event.date === selectedDate).sort((a,b) => a.time.localeCompare(b.time));
 
     if (sortedEvents.length === 0) {
       const empty = document.createElement("p");
       empty.className = "empty";
-      empty.textContent = "No events scheduled - add one above!"
+      empty.textContent = "No events scheduled on this date - add one above!"
       eventsEl.append(empty)
       return;
     }
@@ -515,7 +612,7 @@
       }
 
       const heading = document.createElement("h3");
-      heading.textcontent = event.title;
+      heading.textContent = event.title;
 
       const date = document.createElement("p");
       date.className = "calendar-event-date";
@@ -599,6 +696,9 @@
     });
 
     saveCalendarEvents();
+    selectedDate = date;
+    displayedMonth = new Date(Number(date.slice(0, 4)), Number(date.slice(5,7)) - 1, 1);
+    renderInteractiveCalendar();
     renderCalendarEvents();
     eventForm.reset();
     eventDate.value = localDateString();

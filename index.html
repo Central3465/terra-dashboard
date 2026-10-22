@@ -20,13 +20,42 @@
 
   <div id="clock" class="panel hidden">
     <button class="drag-handle" id="clock-handle" title="Drag to move (arrow keys to nudge)" aria-label="Move clock panel">⠿ Move</button>
-    <label class="sr-only" for="the-actual-time">Timer</label>
-    <input type="text" id="the-actual-time" value="24:00" spellcheck="false"
-           inputmode="numeric" aria-live="off" />
+    
+    <div class="timer-face">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="timer-track" cx="60" cy="60" r="54" />
+        <circle
+          id="timer-progress"
+          class="timer-progress"
+          cx="60"
+          cy="60"
+          r="54"
+        />
+      </svg>
+
+      <div class="timer-content">
+        <label class="sr-only" for="the-actual-time">
+          Countdown time
+        </label>
+
+        <input
+          type="text"
+          id="the-actual-time"
+          value="24:00"
+          spellcheck="false"
+          inputmode="numeric"
+          aria-live="off"
+        />
+
+        <span class="timer-caption">FOCUS SESSION</span>
+      </div>
+    </div>
+
     <div class="clock-buttons">
       <button id="start" type="button">Start</button>
       <button id="reset" type="button">Reset</button>
     </div>
+
   </div>
 
   <div id="goals" class="panel hidden">
@@ -62,6 +91,24 @@
       <button type="submit">Add event</button>
     </form>
     <p id="event-status" class="empty" aria-live="polite"></p>
+    <div class="calendar-header">
+      <button id="calendar-prev" type="button" aria-label="Previous month">‹</button>
+
+      <h3 id="calendar-month" aria-live="polite"></h3>
+
+      <button id="calendar-next" type="button" aria-label="Next month">›</button>
+    </div>
+    <div class="calendar-weekdays" aria-hidden="true">
+      <span>Mon</span>
+      <span>Tue</span>
+      <span>Wed</span>
+      <span>Thu</span>
+      <span>Fri</span>
+      <span>Sat</span>
+      <span>Son</span>
+    </div>
+    <div id="calendar-grid" class="calendar-grid" aria-label="Choose a date"></div>
+    <p id="calendar-selected-date" class="calendar-selected-date" aria-live="polite"></p>
     <div id="events" aria-live="polite">
       <p class="empty">No events scheduled, add one!</p>
     </div>

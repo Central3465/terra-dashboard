@@ -394,3 +394,207 @@ button:focus-visible { box-shadow: 0 0 0 3px rgba(120, 180, 255, 0.7); }
     flex: 1;
   }
 }
+
+#calender {
+  width: min(420px, calc(100vw - 32px));
+  min-width: 0;
+}
+
+.calender-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.calendar-nav button {
+  min-width: 40px;
+  padding: 8px;
+  font-size: 18px;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  width: 100%;
+}
+
+.calendar-weekdays span {
+  padding: 8px 0;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.calendar-day {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  font-size: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid transparent;
+}
+
+.calendar-day:hover {
+  background: rgba(12, 98, 210, 0.4);
+}
+
+.calendar-day.today {
+  border-color: var(--accent-hi);
+}
+
+.calendar-day.selected {
+  background: var(--accent);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.calendar-day.outside-month {
+  opacity: 0.35;
+}
+
+.calendar-day.has-events::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #9bc5ff;
+}
+
+.calendar-day.selected.has-events::after {
+  background: white;
+}
+
+.calendar-selected-date {
+  width: 100%;
+  margin: 0;
+  font-size: 14px;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.calendar-day:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+#clock {
+  min-width: 280px;
+}
+
+.timer-face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 220px;
+  max-width: 100%;
+  aspect-ratio: 1;
+}
+
+.timer-face svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible
+}
+
+.timer-track,
+.timer-progress {
+  fill: none;
+  stroke-width: 7;
+}
+
+.timer-track {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+
+.timer-progress {
+  stroke: var(--accent-hi);
+  stroke-linecap: round;
+  stroke-dasharray: 339.292;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear;
+  filter: drop-shadow(0 0 5px var(--glow));
+}
+
+.timer-content {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#the-actual-time {
+  width: 160px;
+  max-width: 100%;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  font-size: 2.2rem;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+#the-actual-time:focus {
+  background: rgba(12, 98, 210, 0.2);
+}
+
+.timer-caption {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.clock-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 420px) {
+  .timer-face {
+    width: 190px;
+  }
+
+  #the-actual-time {
+    font-size: 1.9rem;
+  }
+
+  #calender {
+    padding-inline: 16px;
+  }
+
+  .calendar-grid,
+  .calendar-weekdays {
+    gap: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-progress {
+    transition: none;
+  }
+}
