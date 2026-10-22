@@ -339,7 +339,7 @@
     const desc = WEATHER_CODES[code] ?? `Code ${code}`;
     weatherContent.replaceChildren();
 
-    const temp = document.createElement("div")
+    const temp = document.createElement("div");
     temp.className = "weather-temp";
     temp.textContent = `${Math.round(w.temperature_2m)} Degrees`
 
@@ -347,11 +347,11 @@
     feels.className = "weather-detail";
     feels.textContent = `Feels like ${Math.round(w.apparent_temperature)} Degrees`
 
-    const condition = document.createElement("div")
+    const condition = document.createElement("div");
     condition.className = "weather-detail";
     condition.textContent = desc
 
-    const extra = document.createElement("div")
+    const extra = document.createElement("div");
     extra.className = "weather-detail"
     extra.textContent = `Humidity ${w.relativehumidity_2m}$ -- Wind ${w.wind_speed_10m} km/h`
     
@@ -391,7 +391,7 @@
 
           const data = await response.json()
           renderWeather(data.current);
-        } catch {err} {
+        } catch (err) {
           console.error("Weather fetch failed:", err)
           renderWeatherError("Couldn't load weather.")
         }
