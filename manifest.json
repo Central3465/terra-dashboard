@@ -1,0 +1,8 @@
+{
+    "name": "Terra Dashboard",
+    "short_name": "Terra",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_colour": "#01a7be8"
+}

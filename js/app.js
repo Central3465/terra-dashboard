@@ -1,6 +1,19 @@
 (() => {
   "use strict";
 
+  // service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register("/serviceworker.js")
+            .then(registration => {
+                console.log('service worker registered')
+            })
+            .catch(error => {
+                console.log('failed:', error)
+            })
+    })
+ }
+
   /* ---------- safe storage ---------- */
   const storage = {
     get(key, fallback = null) {
@@ -46,6 +59,7 @@
     askBox.classList.add("hidden");
     goalsEl.classList.remove("hidden");
     clockEl.classList.remove("hidden");
+    $("weather").classList.remove("hidden");
     clockEl.classList.add("pop-in");
     goalsEl.classList.add("pop-in");
   }
@@ -341,11 +355,11 @@
 
     const temp = document.createElement("div");
     temp.className = "weather-temp";
-    temp.textContent = `${Math.round(w.temperature_2m)} Degrees`
+    temp.textContent = `${Math.round(w.temperature_2m)}ºC`
 
     const feels = document.createElement("div");
     feels.className = "weather-detail";
-    feels.textContent = `Feels like ${Math.round(w.apparent_temperature)} Degrees`
+    feels.textContent = `Feels like ${Math.round(w.apparent_temperature)}ºC`
 
     const condition = document.createElement("div");
     condition.className = "weather-detail";
@@ -356,7 +370,6 @@
     extra.textContent = `Humidity ${w.relativehumidity_2m}$ -- Wind ${w.wind_speed_10m} km/h`
     
     weatherContent.append(temp, condition, feels, extra)
-    weatherEL.classList.remove("hidden")
   }
 
   function renderWeatherError(msg) {
@@ -365,7 +378,6 @@
     p.className = "empty"
     p.textContent = msg
     weatherContent.append(p)
-    weatherEL.classList.remove("hidden")
   }
 
   function fetchWeather() {
