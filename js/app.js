@@ -52,6 +52,7 @@
   const showName = $("show-name");
   const clockEl = $("clock");
   const goalsEl = $("goals");
+  const calenderEl = $("calender")
 
   function greet(name) {
     showName.textContent = `Welcome, ${name}!`;
@@ -59,9 +60,11 @@
     askBox.classList.add("hidden");
     goalsEl.classList.remove("hidden");
     clockEl.classList.remove("hidden");
+    calenderEl.classList.remove("hidden")
     $("weather").classList.remove("hidden");
     clockEl.classList.add("pop-in");
     goalsEl.classList.add("pop-in");
+    calenderEl.classList.add("pop-in")
   }
 
   const savedName = storage.get("saved_name");
@@ -420,9 +423,267 @@
   setInterval(fetchWeather, 15 * 60 * 1000);
   makeDraggable(weatherEL, $("weather-handle"), "weather_pos");
 
+  // calender ----------------------------------------------------------
+  const eventsEl = $("events");
+  const eventForm = $("event-form");
+  const eventTitle = $("event-title");
+  const eventDate = $("event-date");
+  const eventTime = $("event-time");
+  const eventDescription = $("event-description");
+  const eventStatus = $("event-status");
+
+  let calendarEvents = storage.getJSON("calendar_events", []);
+
+  calendarEvents = Array.isArray(calendarEvents)
+    ? calendarEvents.filter((event) =>
+      event &&
+    typeof event.id === "string" &&
+    typeof event.title === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(event.date) &&
+    /^\d{2}:\d{2}$/.test(event.time) &&
+    (event.description == null || typeof event.description === "string")
+    ).map((event) => ({
+      id: event.id,
+      title: event.title,
+      date: event.date,
+      time: event.time,
+      description: event.description || "",
+    }))
+    : [];
+
+  function saveCalendarEvents() {
+    storage.setJSON("calendar_events", calendarEvents)
+  }
+
+  function localDateString(date = new Date()) {
+    return [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-");
+  }
+
+  eventDate.value = localDateString()
+
+  function formatEventDate(dateString, timeString) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const date = new Date(year, month - 1, day, hours, minutes);
+
+    return date.toLocaleString(undefined, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function renderCalendarEvents() {
+    eventsEl.replaceChildren();
+
+    const sortedEvents = [...calendarEvents].sort((a, b) =>
+      a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
+    );
+
+    if (sortedEvents.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "No events scheduled - add one above!"
+      eventsEl.append(empty)
+      return;
+    }
+
+    const now = new Date();
+
+    sortedEvents.forEach((event) => {
+      const card = document.createElement("article")
+      card.className = "calendar-event";
+
+      const eventDateTime = new Date(
+        ...event.date.split("-").map(Number) 
+      );
+
+      const [year, month, day] = event.date.split("-").map(Number);
+      const [hours, minutes] = event.time.split(":").map(Number);
+      eventDateTime.setFullYear(year, month -1, day);
+      eventDateTime.setHours(hours, minutes, 0, 0);
+
+      if (eventDateTime < now) {
+        card.classList.add("past-event");
+      }
+
+      const heading = document.createElement("h3");
+      heading.textcontent = event.title;
+
+      const date = document.createElement("p");
+      date.className = "calendar-event-date";
+      date.textContent = formatEventDate(event.date, event.time);
+
+      card.append(heading, date);
+
+      if (event.description) {
+        const description = document.createElement("p")
+        description.className = "calendar-event-description";
+        description.textContent = event.description;
+        card.append(description);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "calendar-event-actions";
+
+      const exportButton = document.createElement("button");
+      exportButton.type = "button";
+      exportButton.textContent = "Export .ics";
+      exportButton.addEventListener("click", () => {
+        exportCalendarEvent(event);
+      })
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "goal-remove";
+      deleteButton.textContent = "Delete";
+      deleteButton.setAttribute(
+        "aria-label",
+        `Delete event: ${event.title}`
+      );
+
+      deleteButton.addEventListener("click", () => {
+        calendarEvents = calendarEvents.filter(
+          (item) => item.id !== event.id
+        );
+        saveCalendarEvents();
+        renderCalendarEvents();
+        eventStatus.textContent = "Event deleted.";
+      });
+
+      actions.append(exportButton, deleteButton);
+      card.append(actions);
+      eventsEl.append(card);
+    });
+  }
+
+  eventForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const title = eventTitle.value.trim();
+    const date = eventDate.value;
+    const time = eventTime.value;
+    const description = eventDescription.value.trim();
+
+    if (!title || !date || !time) {
+      eventStatus.textContent = "Please enter a title, date and time."
+      return;
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+    const [hours, minutes] = time.split(":").map(Number);
+    const checkedDate = new Date(year, month - 1, day, hours, minutes);
+
+    if (
+      checkedDate.getFullYear() !== year ||
+      checkedDate.getMonth() !== month -1 ||
+      checkedDate.getDate() !== day
+    ) {
+      eventStatus.textContent = "please enter valid date";
+      return;
+    }
+
+    const id = globalThis.crypto?.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+    calendarEvents.push({
+      id, title, date, time, description
+    });
+
+    saveCalendarEvents();
+    renderCalendarEvents();
+    eventForm.reset();
+    eventDate.value = localDateString();
+    eventTitle.focus();
+    eventStatus.textContent = "Event added successfully!";
+  });
+
+  function escapeICSText(value) {
+    return String(value)
+      .replace(/\\/g, "\\\\")
+      .replace(/\r\n|\r|\n/g, "\\n")
+      .replace(/,/g, "\\,")
+      .replace(/;/g, "\\;");
+  }
+
+  function exportCalendarEvent(event) {
+    const [year, month, day] = event.date.split("-");
+    const [hours, minutes] = event.time.split(":");
+
+    const start = `${year}${month}${day}T${hours}${minutes}00`;
+
+    const endDate = new Date(
+      Number(year),
+      Number(month) -1,
+      Number(day),
+      Number(hours), 
+      Number(minutes) + 60
+    );
+
+    const end = [
+      endDate.getFullYear(),
+      String(endDate.getMonth() + 1).padStart(2, "0"),
+      String(endDate.getDate()).padStart(2, "0"),
+    ].join("") +
+      "T" +
+      String(endDate.getHours()).padStart(2, "0") +
+      String(endDate.getMinutes()).padStart(2, "0") 
+        "00";
+
+    const uid = `${event.id}@terra-dashboard.local`;
+    const stamp = new Date().toISOString()
+      .replace(/[-:]/g, "")
+      .replace(/\.\d{3}/, "");
+
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Terra Dashboard//Calendar//EN",
+      "CALSCALE:GREGORIAN",
+      "BEGIN:VEVENT",
+      `UID:${uid}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${start}`,
+      `DTEND:${end}`,
+      `SUMMARY:${escapeICSText(event.title)}`,
+      `DESCRIPTION:${escapeICSText(event.description)}`,
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ];
+
+    const blob = new Blob(
+      [lines.join("\r\n") + "\r\n"],
+      { type: "text/calendar;charset=utf-8"}
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${event.date}-${event.title
+      .replace(/[^\p{L}\p{N}-]+/gu, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 60) || "event"}.ics`;
+
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  renderCalendarEvents();
+
+  makeDraggable(calenderEl, $("calender-handle"), "calender_pos");
 
   function updateGreeting() {
-    const name = storage.getItem("saved_name") || "friend";
+    const name = storage.get("saved_name") || "friend";
 
     const greetings = [
       "Lovely summer day, isn't it?",
