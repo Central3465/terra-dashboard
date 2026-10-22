@@ -512,7 +512,7 @@
       
       const button = document.createElement("button");
       button.type = "button";
-      button.className("calendar-day");
+      button.className = "calendar-day";
       button.textContent = date.getDate();
 
       if (!inMonth) button.classList.add("outside-month");

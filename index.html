@@ -79,23 +79,24 @@
   <div id="calender" class="panel hidden">
     <button class="drag-handle" id="calender-handle" title="Drag to move (arrow keys to nudge)" aria-label="Move calender panel">⠿ Move</button>
     <h2>📅 Calendar</h2>
-    <form id="event-form">
-      <label for="event-title">Event title</label>
-      <input type="text" id="event-title" placeholder="eg. coding session" maxlength="120" required />
-      <label for="event-date">Date</label>
-      <input type="date" id="event-date" required />
-      <label for="event-time">Start time</label>
-      <input type="time" id="event-time" required />
-      <label for="event-description">Description (optional)</label>
-      <textarea id="event-description" placeholder="Add some details..." maxlength="1000" rows="3"></textarea>
-      <button type="submit">Add event</button>
-    </form>
-    <p id="event-status" class="empty" aria-live="polite"></p>
+    <details class="event-form-details">
+      <summary>+ Add Event</summary>
+        <form id="event-form">
+          <label for="event-title">Event title</label>
+          <input type="text" id="event-title" placeholder="eg. coding session" maxlength="120" required />
+          <label for="event-date">Date</label>
+          <input type="date" id="event-date" required />
+          <label for="event-time">Start time</label>
+          <input type="time" id="event-time" required />
+          <label for="event-description">Description (optional)</label>
+          <textarea id="event-description" placeholder="Add some details..." maxlength="1000" rows="3"></textarea>
+          <button type="submit">Add event</button>
+        </form>
+        <p id="event-status" class="empty" aria-live="polite"></p>
+    </details>
     <div class="calendar-header">
       <button id="calendar-prev" type="button" aria-label="Previous month">‹</button>
-
       <h3 id="calendar-month" aria-live="polite"></h3>
-
       <button id="calendar-next" type="button" aria-label="Next month">›</button>
     </div>
     <div class="calendar-weekdays" aria-hidden="true">
