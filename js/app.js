@@ -1131,7 +1131,7 @@
 
     $("hackatime-hours").textContent = formatCodingTime(data.hours?.total_seconds);
     $("hackatime-streak").textContent = `${data.streak?.streak_days ?? 0}`;
-    $("hackatime-projects").textContent = `$(data.projects?.projects?.length ?? 0)`;
+    $("hackatime-projects").textContent = `${data.projects?.projects?.length ?? 0}`;
 
     const username = data.profile?.github_username || "Connected account";
 
@@ -1139,8 +1139,7 @@
 
     const heartbeat = data.heartbeat?.heartbeat;
 
-    $("hackatime-latest").textContent = heartbeat ? `Latest activity: ${heartbeat.project || "Unkown project"}
-      ${heartbeat.language || "Unknown language"}` : "No recent coding activity.";
+    $("hackatime-latest").textContent = heartbeat ? `Latest activity: ${heartbeat.project || "Unknown project"} (${heartbeat.language || "Unknown language"})` : "No recent coding activity.";
 
     hackstats.hidden = false;
   }
@@ -1172,12 +1171,12 @@
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
     const startDate = getDateString(sevenDaysAgo);
-    const endDAte = getDateString(today);
+    const endDate = getDateString(today);
 
-    const [profile, hours, streak, projects, heartbeat] = 
+    const [profile, hours, streak, heartbeat, projects] = 
       await Promise.all([
         hackatimeRequest("me", token),
-        hackatimeRequest("hours", token, { start_date: startDate, end_date: endDAte}),
+        hackatimeRequest("hours", token, { start_date: startDate, end_date: endDate}),
         hackatimeRequest("streak", token),
         hackatimeRequest("heartbeats/latest", token),
         hackatimeRequest("projects", token)
@@ -1190,7 +1189,7 @@
       storage.setJSON(HACKATIME_DATA_KEY, data); // cache stats 
 
       renderHackatimeStats(data);
-      setHackatimeStatus(`Stats updated ${new Date(date.fetchedAt).toLocaleDateString()}`);
+      setHackatimeStatus(`Stats updated ${new Date(data.fetchedAt).toLocaleDateString()}`);
 
       return data;
   }
@@ -1250,9 +1249,9 @@
       setHackatimeStatus("Complete Hackatime connection...");
       
       const body = new URLSearchParams({
-        client_id: HACKATIME_CLIENT_ID,
+        client_id: CLIENT_ID,
         code,
-        redirect_uri: HACKATIME_REDIRECT_URL,
+        redirect_uri: REDIRECT_URI,
         grant_type: "authorization_code",
         code_verifier: verifier,
       });
@@ -1281,7 +1280,7 @@
       await fetchHackatimeStats(tokenDate.access_token);
       hackconnect.hidden = true;
     } catch (error) {
-      setHackatimeStatus(`Couldn't connect: $(error.message)`);
+      setHackatimeStatus(`Couldn't connect: ${error.message}`);
     }
   }
 
@@ -1302,7 +1301,7 @@
 
   hackconnect.addEventListener("click", startHackatimeOauth);
 
-  $("hacktime-refresh").addEventListener("click", refreshHackatimeStats);
+  $("hackatime-refresh").addEventListener("click", refreshHackatimeStats);
 
   $("hackatime-disconnect").addEventListener("click", () => {
     sessionStorage.removeItem(HACKATIME_TOKEN_KEY);
@@ -1313,7 +1312,9 @@
     setHackatimeStatus("Saved stats cleared.")
   });
 
-  renderHackatimeStats(storage.getJSON(HACKATIME_DATA_KEY, null));
+  const cachedStats = storage.getJSON(HACKATIME_DATA_KEY, null);
+  renderHackatimeStats(cachedStats);
+  if (cachedStats && sessionStorage.getItem(HACKATIME_TOKEN_KEY)) hackconnect.hidden = true;
 
   handleHackatimeCallback();
   makeDraggable(hackatimeEl, $("hackatime-handle"), "hackatime_pos");
