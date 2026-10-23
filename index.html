@@ -131,7 +131,6 @@
       <p class="empty">No events scheduled, add one!</p>
     </div>
   </div>
-  <!-- removed hackatime panel for now due to API CORS issues blocking my domain
   <div id="hackatime" class="panel hidden">
     <button class="drag-handle" id="hackatime-handle" title="Drag to move" aria-label="Move Hackatime panel">⠿ Move</button>
     <h2>⌨️ Hackatime Stats</h2>
@@ -157,7 +156,13 @@
       <button id="hackatime-refresh" type="button">Refresh stats</button>
       <button id="hackatime-disconnect" type="button">Clear saved data</button>
     </div>
-  -->
+    <div class="disabled-overlay" role="status">
+      <div class="disabled-msg">
+        <span class="disabled-icon" aria-hidden="true">⚠️</span>
+        <strong>Temporarily Disabled</strong>
+        <p>Hackatime is currently unavailable due to API CORS restrictions blocking this domain.</p>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="./js/app.js"></script>

@@ -912,3 +912,57 @@ button:focus-visible { box-shadow: 0 0 0 3px rgba(120, 180, 255, 0.7); }
     grid-template-columns: 1fr;
   }
 }
+
+#hackatime {
+  position: relative;
+  min-height: 200px;
+}
+
+.disabled-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 25, 42, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: inherit;
+  cursor: not-allowed;
+}
+
+.disabled-msg {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  max-width: 340px;
+  width: 90%;
+  background: rgba(15, 23, 43, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.disabled-icon {
+  display: block;
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.disabled-msg strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.disabled-msg p {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.85;
+  margin: 0;
+  text-align: center;
+}

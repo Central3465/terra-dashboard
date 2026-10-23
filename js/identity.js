@@ -7,7 +7,7 @@ const clockEl = $("clock");
 const goalsEl = $("goals");
 const calenderEl = $("calender")
 const sessionsEl = $("sessions");
-// const hackatimeEl = $("hackatime"); removed hackatime from the frontend so this makes sense
+const hackatimeEl = $("hackatime"); 
 
 function greet(name) {
   showName.textContent = `Welcome, ${name}!`;
@@ -22,8 +22,8 @@ function greet(name) {
   calenderEl.classList.add("pop-in")
   sessionsEl.classList.remove("hidden");
   sessionsEl.classList.add("pop-in")
-  // hackatimeEl.classList.remove("hidden");
-  // hackatimeEl.classList.add("pop-in")
+  hackatimeEl.classList.remove("hidden");
+  hackatimeEl.classList.add("pop-in")
 }
 
 const savedName = storage.get("saved_name");
