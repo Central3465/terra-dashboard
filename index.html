@@ -132,6 +132,33 @@
     </div>
   </div>
 
+  <div id="hackatime" class="panel hidden">
+    <button class="drag-handle" id="hackatime-handle" title="Drag to move" aria-label="Move Hackatime panel">⠿ Move</button>
+    <h2>⌨️ Hackatime Stats</h2>
+    <p id="hackatime-status" role="status">Connect your Hackatime account to get started.</p>
+    <button id="hackatime-connect" type="button">Connect Hackatime</button>
+    <div id="hackatime-stats" hidden>
+      <div class="hackatime-stat-grid">
+        <div class="hackatime-stat">
+          <span id="hackatime-hours">-</span>
+          <small>Coding time - 7 days</small>
+        </div>
+        <div class="hackatime-stat">
+          <span id="hackatime-streak">-</span>
+          <small>Day streak</small>
+        </div>
+        <div class="hackatime-stat">
+          <span id="hackatime-projects">-</span>
+          <small>Projects</small>
+        </div>
+      </div>
+      <p id="hackatime-user"></p>
+      <p id="hackatime-latest"></p>
+      <button id="hacktime-refresh" type="button">Refresh stats</button>
+      <button id="hackatime-disconnect" type="button" disabled>Clear saved data</button>
+    </div>
+  </div>
+
   <script src="./js/app.js"></script>
 </body>
 </html>

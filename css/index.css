@@ -856,3 +856,59 @@ button:focus-visible { box-shadow: 0 0 0 3px rgba(120, 180, 255, 0.7); }
     transition: none
   }
 }
+
+#hackatime {
+  width: min(420px, calc(100vw - 32px));
+  min-width: 0;
+}
+
+#hackatime h2 {
+  margin: 10px 0 14px;
+}
+
+#hackatime-status,
+#hackatime-user,
+#hackatime-latest {
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.hackatime-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.hackatime-stat {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.hackatime-stat span {
+  display: block;
+  font-size: 23px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.hackatime-stat small {
+  display: block;
+  margin-top: 6px;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+#hackatime button:not(.drag-handle) {
+  margin: 4px 4px 4px 0;
+}
+
+@media (max-width: 360px) {
+  .hackatime-stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
