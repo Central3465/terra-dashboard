@@ -422,6 +422,20 @@
     storage.setJSON("goals", goals);
   }
 
+  function updateGoalProgress() {
+    const progressFill = $("progress-fill");
+
+    if (!progressFill) return;
+
+    const total = goals.length;
+    const completed = goals.filter(goal => goal.done).length;
+
+    const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    progressFill.style.width = `${percentage}%`;
+    progressFill.title = `${completed} of ${total} goals completed`;
+  }
+
   function renderGoals() {
     goalList.replaceChildren();
     goalEmpty.classList.toggle("hidden", goals.length > 0);
@@ -436,6 +450,7 @@
       checkbox.addEventListener("change", () => {
         goals[i].done = checkbox.checked;
         saveGoals();
+        updateGoalProgress();
         renderGoals();
       });
 
@@ -451,6 +466,7 @@
       remove.addEventListener("click", () => {
         goals.splice(i, 1);
         saveGoals();
+        updateGoalProgress();
         renderGoals();
       });
 
