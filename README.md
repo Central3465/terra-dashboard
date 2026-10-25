@@ -31,7 +31,8 @@ Then visit `http://localhost:8000`. Any static server will do (`npx serve`, GitH
 No dependencies, no `npm install`, nothing to compile. The whole thing is plain files.
 
 ### Configuration
-Nothing required. Two things worth knowing anyway:
+Nothing required. Three things worth knowing anyway:
+- Hackatime integration is not available currently due to CORS issues. To fix, I would have to call Hackatime API from my own API backend, which I have decided I would not commit due to hosting costs and the scale of this. I'm still accepting contributions via PRs.
 - The weather panel asks for a location through the browser's geolocation prompt; deny it and it will tell you "Location permission denied." and leave you alone.
 - The Hackatime panel needs you to sign in with your Hack Club account before it shows anything. The client ID in `js/hackatime.js` is public by design (it is not a secret), so there is nothing for you to fill in.
 
