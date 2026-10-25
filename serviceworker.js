@@ -1,4 +1,4 @@
-const CACHE_NAME = 'terra-cache-v1';
+const CACHE_NAME = 'terra-cache-v2';
 const urls = [
     "/",
     "/index.html",
@@ -14,7 +14,8 @@ const urls = [
     "/js/hackatime.js",
     "/utils/dom.js",
     "/utils/makeDraggable.js",
-    "/utils/makeResizable.js"
+    "/utils/makeResizable.js",
+    "/js/resetloc.js",
 ]
 
 self.addEventListener('install', event => {

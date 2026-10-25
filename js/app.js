@@ -5,6 +5,7 @@ import "./weather.js";
 import "./calendar.js";
 import "./hackatime.js";
 import "./widgets.js";
+import "./resetloc.js";
 
 // service worker
 if ("serviceWorker" in navigator) {
