@@ -1,10 +1,11 @@
 import { $ } from "../utils/dom.js";
 import { storage } from "./storage.js";
 import { makeDraggable } from "../utils/makeDraggable.js";
+import { makeResizable } from "../utils/makeResizable.js";
 
 const hackatimeEl = $("hackatime");
 
-const CLIENT_ID = "9XeSfhcc786niqyKWaSwdkwdQW1mhB675grHO5ecAjM"; // nigga its not the secret so nice try :)
+const CLIENT_ID = "9XeSfhcc786niqyKWaSwdkwdQW1mhB675grHO5ecAjM"; // its not the secret so nice try :)
 const REDIRECT_URI = `${window.location.origin}${window.location.pathname}`;
 const HACKATIME_AUTH_URL = "https://hackatime.hackclub.com/oauth/authorize";
 const HACKATIME_TOKEN_URL = "https://hackatime.hackclub.com/oauth/token";
@@ -278,3 +279,4 @@ if (cachedStats && sessionStorage.getItem(HACKATIME_TOKEN_KEY))
 
 handleHackatimeCallback();
 makeDraggable(hackatimeEl, $("hackatime-handle"), "hackatime_pos");
+makeResizable(hackatimeEl, "hackatime", 280, 220);
