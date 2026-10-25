@@ -3,15 +3,19 @@ import { storage } from "./storage.js";
 
 const askBox = $("ask_name");
 const showName = $("show-name");
+const greeting = $("greeting");
 const clockEl = $("clock");
 const goalsEl = $("goals");
 const calenderEl = $("calender")
 const sessionsEl = $("sessions");
-const hackatimeEl = $("hackatime"); 
+const hackatimeEl = $("hackatime");
+const resetBtn = $("reset-location");
 
 function greet(name) {
   showName.textContent = `Welcome, ${name}!`;
   showName.classList.add("visible");
+  greeting.classList.remove("hidden");
+  resetBtn.classList.remove("hidden");
   askBox.classList.add("hidden");
   goalsEl.classList.remove("hidden");
   clockEl.classList.remove("hidden");
